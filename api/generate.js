@@ -1,58 +1,67 @@
-import multer from "multer";
-import { Configuration, OpenAIApi } from "openai";
-import dotenv from "dotenv";
+// app/api/generate/route.ts
+import { NextResponse } from 'next/server';
 
-dotenv.config();
-
-// multer memory storage for image-to-image
-const upload = multer({ storage: multer.memoryStorage() });
-
-export const config = { api: { bodyParser: false } };
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
-
-const BASE_PROMPT = `
-Subject is in a dramatic seated pose at a gala, head bowed with their right hand pressed firmly over their eyes in a gesture of deep grief. Subject is wearing a luxury black velvet tuxedo, a crisp white dress shirt with a black bow tie, and a large white floral carnation boutonniere on the left lapel. A high-end silver watch is prominent on the wrist of the hand covering the face. Cinematic lighting with a warm, blurry background of an awards ceremony audience and theater lights. 35mm film photography style, high contrast, moody atmosphere
-`;
-
-export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
-
+export async function POST(req: Request) {
   try {
-    // process uploaded image if exists
-    await new Promise((resolve, reject) => {
-      upload.single("image")(req, res, (err) => (err ? reject(err) : resolve()));
-    });
+    const formData = await req.formData();
+    const file = formData.get('image') as File | null;
+    // Optional: user can add extra text, but we use your base prompt mainly
+    const userPrompt = formData.get('prompt') as string || '';
 
-    // use extra prompt if user types one
-    const extraPrompt = req.body.prompt || "";
-    const finalPrompt = BASE_PROMPT + (extraPrompt ? ` Additional edits: ${extraPrompt}` : "");
-
-    let imageUrl;
-
-    if (req.file) {
-      // image-to-image
-      const response = await openai.images.edit({
-        image: req.file.buffer,
-        prompt: finalPrompt,
-        size: "512x512",
-      });
-      imageUrl = response.data.data[0].url;
-    } else {
-      // text-to-image (if no file, still uses base prompt)
-      const response = await openai.images.generate({
-        prompt: finalPrompt,
-        size: "512x512",
-      });
-      imageUrl = response.data.data[0].url;
+    if (!file) {
+      return NextResponse.json({ error: 'No image uploaded' }, { status: 400 });
     }
 
-    res.status(200).json({ image: imageUrl });
-  } catch (err) {
-    console.error("generate error", err);
-    res.status(500).json({ error: "Error generating image", detail: String(err) });
+    // Convert uploaded file to base64
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+    // Your full dramatic Sad Bunny gala prompt
+    const basePrompt = `Subject is in a dramatic seated pose at a gala, head bowed with their right hand pressed firmly over their eyes in a gesture of deep grief. Subject is wearing a luxury black velvet tuxedo, a crisp white dress shirt with a black bow tie, and a large white floral carnation boutonniere on the left lapel. A high-end silver watch is prominent on the wrist of the hand covering the face. Cinematic lighting with a warm, blurry background of an awards ceremony audience and theater lights. 35mm film photography style, high contrast, moody atmosphere. Preserve the exact face and identity from the input image. ${userPrompt}`;
+
+    // Hugging Face img2img endpoint (using a good free model)
+    // You can swap model: e.g. 'stabilityai/stable-diffusion-2-1' or 'runwayml/stable-diffusion-v1-5'
+    const model = 'runwayml/stable-diffusion-v1-5'; // classic, works free
+    const apiUrl = `https://api-inference.huggingface.co/models/${model}`;
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.HUGGINGFACE_API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        inputs: base64,  // base64 image as starting point
+        parameters: {
+          prompt: basePrompt,
+          negative_prompt: 'blurry, low quality, deformed, extra limbs, bad anatomy, watermark, text',
+          strength: 0.55,       // 0.0-1.0; higher = more change, lower = keep more original face
+          guidance_scale: 7.5,  // how strongly to follow prompt
+          num_inference_steps: 30,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('HF error:', errorText);
+      return NextResponse.json({ error: 'Generation failed - check token or queue' }, { status: 500 });
+    }
+
+    const blob = await response.blob();
+    const generatedUrl = URL.createObjectURL(blob); // for preview (client will handle better)
+
+    // But to return proper URL/base64 for your frontend preview/download
+    // Convert blob to base64 for easy <img src>
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    const base64Generated = await new Promise<string>((resolve) => {
+      reader.onloadend = () => resolve(reader.result as string);
+    });
+
+    return NextResponse.json({ imageUrl: base64Generated });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
