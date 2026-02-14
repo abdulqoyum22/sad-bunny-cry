@@ -1,9 +1,6 @@
 {
-  "functions": {
-    "api/generate.js": {
-      "runtime": "nodejs18.x",
-      "maxDuration": 60
-    }
-  }
+  "version": 2,
+  "builds": [
+    { "src": "package.json", "use": "@vercel/next" }
+  ]
 }
-
