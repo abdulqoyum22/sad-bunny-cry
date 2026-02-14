@@ -16,12 +16,12 @@ export default async function handler(req, res) {
     if (!imageBase64)
       return res.status(400).json({ error: "No image provided" });
 
-    // Strip the data URL prefix if the client sends it
     const rawBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "").replace(/\s/g, "");
     const finalPrompt = `${BASE_PROMPT} ${prompt}`.trim();
 
+    // FIXED URL BELOW: Changed 'api-inference' to 'router'
     const hfResponse = await fetch(
-      "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-refiner-1.0",
+      "https://router.huggingface.co/models/stabilityai/stable-diffusion-xl-refiner-1.0",
       {
         method: "POST",
         headers: {
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           inputs: finalPrompt,
           parameters: {
-            image: rawBase64,         // ✅ correct field name
+            image: rawBase64,
             strength: 0.55,
             guidance_scale: 7.5,
             num_inference_steps: 30,
@@ -48,7 +48,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: errText });
     }
 
-    // ✅ HF returns raw image bytes, not JSON
     const arrayBuffer = await hfResponse.arrayBuffer();
     const base64Image = Buffer.from(arrayBuffer).toString("base64");
     const contentType = hfResponse.headers.get("content-type") || "image/png";
