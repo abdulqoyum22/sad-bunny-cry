@@ -156,27 +156,172 @@
             font-weight:700;
             border: none;
         }
+        
+        /* PFP Generator Button Styles */
+        .pfp-body-btn, .pfp-bg-btn, .pfp-trait-btn {
+            padding: 4px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: transparent;
+        }
+        
+        .pfp-body-btn:hover, .pfp-bg-btn:hover, .pfp-trait-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .pfp-btn-active {
+            border-color: var(--accent-red) !important;
+            box-shadow: 0 0 10px rgba(122, 28, 28, 0.5);
+        }
+        
+        .pfp-trait-btn {
+            padding: 8px 16px;
+            background: #1a0f0f;
+            color: var(--text-secondary);
+            border: 1px solid rgba(185, 28, 28, 0.2);
+        }
+        
+        .pfp-trait-btn.pfp-btn-active {
+            background: var(--accent-red);
+            color: #fff;
+        }
+        
+        .pfp-bg-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
     </style>
     </head>
     <body class="bg-primary text-white">
     <!-- Preloader -->
-    <div id="preloader" class="fixed inset-0 bg-primary flex justify-center items-center z-50">
-        <div class="loader-inner text-center">
-            <div class="ring mx-auto mb-5"></div>
-            <p class="loader-text tracking-widest">LOADING</p>
+    <div id="preloader" class="fixed inset-0 z-50 flex items-center justify-center" style="background: url('./images/sadbunny.gif') center/cover no-repeat;">
+        <div class="text-center" style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 1rem;">
+            <p id="typewriter" class="text-4xl font-bold tracking-widest" style="color: var(--accent-red);"></p>
         </div>
     </div>
 
 <!-- PFP Generator Sliding Modal -->
-<div id="menuContent" class="-translate-x-full fixed inset-0 z-50 transition-transform duration-300">
+<div id="menuContent" class="-translate-x-full fixed inset-0 z-50 transition-transform duration-300 overflow-y-auto">
     <div id="pfpBackdrop" class="absolute inset-0 bg-black/60"></div>
-    <div class="relative max-w-3xl mx-auto mt-20 p-6 rounded-2xl" style="background:#181111; border:1px solid rgba(185,28,28,0.15); color:var(--text-white);">
+    <div class="relative max-w-3xl mx-auto mt-20 mb-10 p-6 rounded-2xl" style="background:#181111; border:1px solid rgba(185,28,28,0.15); color:var(--text-white);">
         <button id="closePfp" class="absolute top-4 right-4 text-sm px-3 py-1" style="background:var(--accent-red);color:#fff;border-radius:8px">Close</button>
         <h3 style="color:var(--accent-red)" class="text-2xl font-bold mb-4">PFP Generator</h3>
-                <div id="pfpGeneratorContainer">
+<div id="pfpGeneratorContainer">
             <div class="space-y-4">
+                <!-- Body Selection -->
+                <div>
+                    <label class="text-xs text-[#a8a29e] mb-1 block">Select Body</label>
+                    <div class="flex gap-2 flex-wrap">
+                        <button class="pfp-body-btn pfp-btn-active" data-body="sadbunny1">
+                            <img src="./images/sadbuny1.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny1">
+                        </button>
+                        <button class="pfp-body-btn" data-body="sadbunny2">
+                            <img src="./images/sadbunny2.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny2">
+                        </button>
+                        <button class="pfp-body-btn" data-body="sadbunny3">
+                            <img src="./images/sadbunny3.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny3">
+                        </button>
+                        <button class="pfp-body-btn" data-body="sadbunny4">
+                            <img src="./images/sadbunny4.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny4">
+                        </button>
+                        <button class="pfp-body-btn" data-body="sadbunny5">
+                            <img src="./images/sadbunny5.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny5">
+                        </button>
+                        <button class="pfp-body-btn" data-body="hero">
+                            <img src="./images/sadbunnyhero.jpeg" class="w-12 h-12 object-cover rounded" alt="hero">
+                        </button>
+                    </div>
+                    
+                    <!-- Background Removal Options -->
+                    <div class="mt-3 flex flex-col gap-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="removeBg" class="w-4 h-4 accent-[#7a1c1c]">
+                            <span class="text-xs text-[#a8a29e]">Remove Background</span>
+                        </label>
+                        <div id="bgRemovalOptions" class="hidden ml-6">
+                            <label class="text-xs text-[#a8a29e] block mb-1">Tolerance: <span id="toleranceValue">30</span></label>
+                            <input type="range" id="bgTolerance" min="0" max="100" value="30" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
+                        </div>
+                    </div>
+                    
+                    <!-- Body Position Adjustment -->
+                    <div id="bodyPositionControls" class="mt-3 flex flex-col gap-2">
+                        <label class="text-xs text-[#a8a29e] block">Body Position Adjustment</label>
+                        <div class="flex gap-4">
+                            <div class="flex-1">
+                                <label class="text-xs text-[#a8a29e] block mb-1">X Offset: <span id="bodyXValue">0</span></label>
+                                <input type="range" id="bodyXOffset" min="-100" max="100" value="0" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
+                            </div>
+                            <div class="flex-1">
+                                <label class="text-xs text-[#a8a29e] block mb-1">Y Offset: <span id="bodyYValue">0</span></label>
+                                <input type="range" id="bodyYOffset" min="-100" max="100" value="0" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
+                            </div>
+                        </div>
+                        <button id="resetBodyPosition" class="text-xs px-2 py-1 rounded mt-1" style="background:rgba(185,28,28,0.2);color:#a8a29e;">Reset Position</button>
+                    </div>
+                </div>
+
+                <!-- Background Selection -->
+                <div>
+                    <label class="text-xs text-[#a8a29e] mb-1 block">Background</label>
+                    <div class="flex gap-2 flex-wrap">
+                        <button class="pfp-bg-btn pfp-btn-active" data-bg="#0f0a0a" style="background:#0f0a0a;border:2px solid #7a1c1c"></button>
+                        <button class="pfp-bg-btn" data-bg="#7a1c1c" style="background:#7a1c1c"></button>
+                        <button class="pfp-bg-btn" data-bg="#1a0f0f" style="background:#1a0f0f"></button>
+                        <button class="pfp-bg-btn" data-bg="#b91c1c" style="background:#b91c1c"></button>
+                        <button class="pfp-bg-btn" data-bg="#f97316" style="background:#f97316"></button>
+                        <button class="pfp-bg-btn" data-bg="#1e3a5f" style="background:#1e3a5f"></button>
+                        <button class="pfp-bg-btn" data-bg="#2d1f3d" style="background:#2d1f3d"></button>
+                        <button class="pfp-bg-btn" data-bg="gradient1" class="pfp-grad-btn" style="background:linear-gradient(135deg, #7a1c1c, #0f0a0a)"></button>
+                        <button class="pfp-bg-btn" data-bg="gradient2" class="pfp-grad-btn" style="background:linear-gradient(135deg, #f97316, #7a1c1c)"></button>
+                    </div>
+                </div>
+
+                <!-- Trait Selection -->
+                <div>
+                    <label class="text-xs text-[#a8a29e] mb-1 block">Traits</label>
+                    <div class="flex gap-2 flex-wrap">
+                        <button class="pfp-trait-btn pfp-btn-active" data-trait="none">None</button>
+                        <button class="pfp-trait-btn" data-trait="ear</button>
+                        <button class="pfp-trait-btn" data-trait="sunglasses">Sunglasses</button>
+                        <button class="pfp-trait-btn" data-trait="crown">Crown</button>
+                        <button class="pfp-trait-btn" data-trait="hat">Top Hat</button>
+                        <button class="pfp-trait-btn" data-trait="halo">Halo</button>
+                        <button class="pfp-trait-btn" data-trait="blush">Blush</button>
+                        <button class="pfp-trait-btn" data-trait="chains">Chains</button>
+                        <button class="pfp-trait-btn" data-trait="hearteyes">Heart Eyes</button>
+                        <button class="pfp-trait-btn" data-trait="moneyeyes">Money Eyes</button>
+                        <button class="pfp-trait-btn" data-trait="stareyes">Star Eyes</button>
+                        <button class="pfp-trait-btn" data-trait="bandana">Bandana</button>
+                        <button class="pfp-trait-btn" data-trait="goldteeth">Gold Teeth</button>
+                        <button class="pfp-trait-btn" data-trait="earrings">Earrings</button>
+                        <button class="pfp-trait-btn" data-trait="3dglasses">3D Glasses</button>
+                        <button class="pfp-trait-btn" data-trait="fireaura">Fire Aura</button>
+                    </div>
+                    
+                    <!-- Trait Position Adjustment -->
+                    <div id="traitPositionControls" class="mt-3 flex flex-col gap-2">
+                        <label class="text-xs text-[#a8a29e] block">Position Adjustment</label>
+                        <div class="flex gap-4">
+                            <div class="flex-1">
+                                <label class="text-xs text-[#a8a29e] block mb-1">X Offset: <span id="traitXValue">0</span></label>
+                                <input type="range" id="traitXOffset" min="-100" max="100" value="0" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
+                            </div>
+                            <div class="flex-1">
+                                <label class="text-xs text-[#a8a29e] block mb-1">Y Offset: <span id="traitYValue">0</span></label>
+                                <input type="range" id="traitYOffset" min="-100" max="100" value="0" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
+                            </div>
+                        </div>
+                        <button id="resetTraitPosition" class="text-xs px-2 py-1 rounded mt-1" style="background:rgba(185,28,28,0.2);color:#a8a29e;">Reset Position</button>
+                    </div>
+                </div>
+
+                <!-- Custom Text -->
                 <div class="flex flex-col sm:flex-row gap-3 items-center">
-                    <input type="text" id="seedInput" placeholder="Type prompt here..." class="w-full sm:flex-1 p-3 rounded-lg" style="background:#0f0a0a; border:1px solid rgba(185,28,28,0.12); color:var(--text-white);">
+                    <input type="text" id="seedInput" placeholder="Custom text..." class="w-full sm:flex-1 p-3 rounded-lg" style="background:#0f0a0a; border:1px solid rgba(185,28,28,0.12); color:var(--text-white);">
                     <input type="file" id="uploadFile" accept="image/*" class="p-2 rounded-lg" style="background:#1a0f0f; border:1px solid rgba(185,28,28,0.08); color:var(--text-secondary);">
                 </div>
 
@@ -184,8 +329,6 @@
                     <button id="generateBtn" class="px-4 py-2 rounded-lg" style="background:var(--accent-red); color:#fff;">Generate PFP</button>
                     <a id="downloadBtn" class="px-4 py-2 rounded-lg hidden" style="background:var(--accent-glow); color:#111; text-decoration:none;">Download</a>
                 </div>
-
-                
 
                 <div class="mt-4">
                     <div class="text-xs text-[#a8a29e] mb-2">Preview</div>
@@ -409,14 +552,32 @@ The idea is to grow the token through meme culture and social media trends, whil
     <script src="script.js"></script>
 
     <script>
+        // Typewriter effect for preloader
+        const text = "SAD BUNNY CRY";
+        const element = document.getElementById("typewriter");
+        let index = 0;
+        
+        function typeWriter() {
+            if (index < text.length) {
+                element.textContent += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 150);
+            }
+        }
+        
+        // Start typewriter when page loads
         window.addEventListener("load", function () {
-            const loader = document.getElementById("preloader");
-            loader.style.opacity = "0";
-            loader.style.transition = "0.5s";
+            typeWriter();
+            
+            setTimeout(() => {
+                const loader = document.getElementById("preloader");
+                loader.style.opacity = "0";
+                loader.style.transition = "0.5s";
 
-            setTimeout( () => {
-                loader.style.display = "none";
-            }, 500);
+                setTimeout(() => {
+                    loader.style.display = "none";
+                }, 500);
+            }, 2000); // Wait for typewriter to finish
         });
     </script>
 </body>
