@@ -2,8 +2,5 @@
   "name": "sad-bunny-pfp-generator",
   "version": "1.0.0",
   "private": true,
-  "type": "module",  // optional, keep if you have it
-  "dependencies": {
-    // nothing or only what you actually need (probably empty for now)
-  }
+  "type": "module"
 }
