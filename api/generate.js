@@ -16,12 +16,14 @@ export default async function handler(req, res) {
     if (!imageBase64)
       return res.status(400).json({ error: "No image provided" });
 
-    const rawBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "").replace(/\s/g, "");
+    const rawBase64 = imageBase64
+      .replace(/^data:image\/\w+;base64,/, "")
+      .replace(/\s/g, "");
+
     const finalPrompt = `${BASE_PROMPT} ${prompt}`.trim();
 
-    // FIXED URL BELOW: Changed 'api-inference' to 'router'
     const hfResponse = await fetch(
-      "https://router.huggingface.co/models/stabilityai/stable-diffusion-xl-refiner-1.0",
+      "https://router.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
       {
         method: "POST",
         headers: {
@@ -29,9 +31,11 @@ export default async function handler(req, res) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          inputs: finalPrompt,
-          parameters: {
+          inputs: {
             image: rawBase64,
+            prompt: finalPrompt,
+          },
+          parameters: {
             strength: 0.55,
             guidance_scale: 7.5,
             num_inference_steps: 30,
