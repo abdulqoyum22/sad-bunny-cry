@@ -310,16 +310,29 @@ async function generatePFPCloud() {
   }
 }
 
+// Replace your generateBtn listener with this:
 if (generateBtn) {
   generateBtn.addEventListener('click', async () => {
     generateBtn.disabled = true;
     generateBtn.innerText = "Generating...";
 
+    // Show status under button if element exists
+    const statusEl = document.getElementById("generateStatus");
+    if (statusEl) {
+      statusEl.textContent = "Warming up model, this can take 20–40s...";
+      statusEl.classList.remove("hidden");
+    }
+
     try {
       await generatePFPCloud();
+      if (statusEl) statusEl.textContent = "Done!";
     } catch (err) {
       console.error("Generation error:", err);
-      alert("Generation failed: " + err.message);
+      if (statusEl) {
+        statusEl.textContent = "Failed: " + err.message;
+      } else {
+        alert("Generation failed: " + err.message);
+      }
     } finally {
       generateBtn.disabled = false;
       generateBtn.innerText = "Generate PFP";
