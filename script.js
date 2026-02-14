@@ -262,17 +262,67 @@ async function generatePFPLocal() {
   }
 }
 
+async function generatePFPCloud() {
+  if (!uploadFile || !uploadFile.files || !uploadFile.files[0]) {
+    alert("Please upload an image first.");
+    return;
+  }
+
+  const file = uploadFile.files[0];
+
+  // Convert image to base64
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result.split(',')[1]; // remove data:image/... prefix
+      resolve(result);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
+  // Call your Vercel API
+  const response = await fetch('/api/generate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      imageBase64: base64,
+      prompt: seedInput ? seedInput.value : ""
+    })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.imageUrl) {
+    throw new Error(data.error || "Generation failed");
+  }
+
+  // Update preview
+  if (avatarImg) avatarImg.src = data.imageUrl;
+
+  // Enable download
+  if (downloadBtn) {
+    downloadBtn.href = data.imageUrl;
+    downloadBtn.download = "sad-bunny-pfp.jpg";
+    downloadBtn.classList.remove('hidden');
+  }
+}
+
 if (generateBtn) {
-  generateBtn.addEventListener('click', async (e) => {
+  generateBtn.addEventListener('click', async () => {
     generateBtn.disabled = true;
+    generateBtn.innerText = "Generating...";
+
     try {
-      // Always use local generator (cloud generation removed)
-      await generatePFPLocal();
+      await generatePFPCloud();
     } catch (err) {
-      console.error('generate error', err);
-      alert('Generation failed: ' + (err.message || err));
+      console.error("Generation error:", err);
+      alert("Generation failed: " + err.message);
     } finally {
       generateBtn.disabled = false;
+      generateBtn.innerText = "Generate PFP";
     }
   });
 }
