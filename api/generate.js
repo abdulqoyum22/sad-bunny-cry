@@ -10,24 +10,18 @@ Preserve the exact face and identity from the input image.
 `;
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
     const { imageBase64, prompt = "" } = req.body;
+    if (!imageBase64) return res.status(400).json({ error: "No image provided" });
 
-    if (!imageBase64) {
-      return res.status(400).json({ error: "No image provided" });
-    }
-
-    // Merge base prompt with any user prompt
+    // Remove spaces/newlines, ensure proper data URL
+    const cleanBase64 = imageBase64.replace(/\s/g, "");
+    const dataUrl = `data:image/png;base64,${cleanBase64}`;
     const finalPrompt = `${BASE_PROMPT} ${prompt}`;
 
-    // Hugging Face expects a full data URL for img2img
-    const dataUrl = `data:image/png;base64,${imageBase64}`;
-
-    const response = await fetch(
+    const hfResponse = await fetch(
       "https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5",
       {
         method: "POST",
@@ -48,21 +42,19 @@ export default async function handler(req, res) {
       }
     );
 
-    const output = await response.json();
+    const output = await hfResponse.json();
 
     if (output.error) {
       console.error("HF Error:", output.error);
       return res.status(500).json({ error: output.error });
     }
 
-    // HF returns base64 string in JSON: output[0].generated_image
-    const generatedBase64 = output[0].generated_image;
+    const generatedBase64 = output[0]?.generated_image;
+    if (!generatedBase64) return res.status(500).json({ error: "No image returned from HF" });
 
-    return res.status(200).json({
-      imageUrl: `data:image/png;base64,${generatedBase64}`,
-    });
-  } catch (error) {
-    console.error("Server Error:", error);
+    return res.status(200).json({ imageUrl: `data:image/png;base64,${generatedBase64}` });
+  } catch (err) {
+    console.error("Server Error:", err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
