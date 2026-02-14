@@ -49,14 +49,20 @@ export default async function handler(req, res) {
 
     // Use HuggingFace Inference API for image-to-image
     // Using stabilityai/stable-diffusion-xl-base-1.0 with img2img
-    const hfResponse = await fetch(
-      'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${hfToken}`,
-          'Content-Type': 'application/json',
-        },
+    // Replace your current fetch body with this:
+const hfResponse = await fetch(
+  'https://api-inference.huggingface.co',
+  {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${hfToken}`,
+      // The API uses the 'inputs' header or specific params for the prompt
+      'X-Wait-For-Model': 'true', 
+    },
+    body: Buffer.from(rawBase64, 'base64'), 
+  }
+);
+
         body: JSON.stringify({
           inputs: finalPrompt,
           parameters: {
