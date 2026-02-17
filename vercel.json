@@ -1,5 +1,11 @@
 {
   "rewrites": [
     { "source": "/api/generate-pfp", "destination": "/api/generate-pfp" }
-  ]
+  ],
+  "functions": {
+    "api/**/*": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  }
 }
