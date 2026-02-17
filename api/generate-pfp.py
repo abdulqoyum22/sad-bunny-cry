@@ -3,6 +3,14 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Content-Type": "application/json"
+}
+
+
 STYLE_PROMPTS = {
     "anime": "anime style, studio ghibli, cel shaded, vibrant colors",
     "cartoon": "cartoon style, pixar 3d render, smooth shading, colorful",
@@ -15,8 +23,12 @@ STYLE_PROMPTS = {
 }
 
 def handler(request):
+    if request.method == "OPTIONS":
+        return {"statusCode": 200, "headers": CORS_HEADERS, "body": ""}
+    
     if request.method != "POST":
-        return {"statusCode": 405, "body": "Method not allowed"}
+        return {"statusCode": 405, "headers": CORS_HEADERS, "body": "Method not allowed"}
+
 
     try:
         data = request.get_json()

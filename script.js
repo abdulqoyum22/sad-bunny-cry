@@ -242,7 +242,12 @@ async function generatePFP() {
   btn.style.opacity = '0.7';
 
   try {
-    const response = await fetch('/api/generate-pfp', {
+   const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? '127.0.0.1:5000/api/generate-pfp'
+  : '/api/generate-pfp';
+
+const response = await fetch(API_URL, {
+
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
