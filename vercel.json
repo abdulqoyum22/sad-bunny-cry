@@ -1,9 +1,9 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/server.py" }
+    { "source": "/api/(.*)", "destination": "/api/index.py" }
   ],
   "functions": {
-    "api/server.py": {
+    "api/index.py": {
       "maxDuration": 60,
       "memory": 1024
     }
