@@ -1,9 +1,9 @@
 {
   "rewrites": [
-    { "source": "/api/generate-pfp", "destination": "/api/generate-pfp" }
+    { "source": "/api/(.*)", "destination": "/api/server.py" }
   ],
   "functions": {
-    "api/generate-pfp.py": {
+    "api/server.py": {
       "maxDuration": 60,
       "memory": 1024
     }
