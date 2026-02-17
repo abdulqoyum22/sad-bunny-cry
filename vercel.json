@@ -1,11 +1,8 @@
 {
   "functions": {
-    "api/generate-pfp.py": {
-      "runtime": "python3.11"
-    }
+    "api/generate-pfp.py": {}
   },
   "rewrites": [
-    { "source": "/api/generate-pfp", "destination": "/api/generate-pfp" },
-    { "source": "/(.*)", "destination": "/$1" }
+    { "source": "/api/generate-pfp", "destination": "/api/generate-pfp" }
   ]
 }
