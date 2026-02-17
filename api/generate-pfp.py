@@ -1,15 +1,10 @@
-import os, base64, io, requests
+import os
+import base64
+import json
+import requests
 from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-CORS_HEADERS = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json"
-}
-
 
 STYLE_PROMPTS = {
     "anime": "anime style, studio ghibli, cel shaded, vibrant colors",
@@ -23,26 +18,30 @@ STYLE_PROMPTS = {
 }
 
 def handler(request):
-    if request.method == "OPTIONS":
-        return {"statusCode": 200, "headers": CORS_HEADERS, "body": ""}
-    
     if request.method != "POST":
-        return {"statusCode": 405, "headers": CORS_HEADERS, "body": "Method not allowed"}
-
+        return {
+            "statusCode": 405,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": "Method not allowed"})
+        }
 
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
         user_image_b64 = data.get("image")
         style = data.get("style", "anime")
         extra_prompt = data.get("extra_prompt", "")
 
         if not user_image_b64:
-            return {"statusCode": 400, "body": "No image provided"}
+            return {
+                "statusCode": 400,
+                "headers": {"Content-Type": "application/json"},
+                "body": json.dumps({"error": "No image provided"})
+            }
 
         # decode user image
         user_image_bytes = base64.b64decode(user_image_b64)
 
-        # load pose reference
+        # load pose reference (must be in the same api/ folder)
         BASE_DIR = os.path.dirname(__file__)
         pose_path = os.path.join(BASE_DIR, "pose_reference.jpeg")
 
@@ -56,7 +55,7 @@ def handler(request):
         else:
             style_text = f"{style_prompt}, {extra_prompt}".strip(", ")
 
-        # -------- ANALYZE USER IMAGE (same as server.py) --------
+        # Analyze user image
         analysis = client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -78,7 +77,7 @@ def handler(request):
 
         subject = analysis.choices[0].message.content
 
-        # -------- SAME PROMPT AS YOUR server.py --------
+        # Generate prompt
         prompt = (
             f"{subject}, sitting down crying at the Grammy Awards ceremony, "
             f"one hand raised covering face with fingers spread across eyes, head tilted down, "
@@ -88,7 +87,7 @@ def handler(request):
             f"high quality, detailed, cinematic"
         )
 
-        # -------- GENERATE IMAGE (fallback model) --------
+        # Generate image
         response = client.images.generate(
             model="dall-e-2",
             prompt=prompt[:1000],
@@ -103,11 +102,13 @@ def handler(request):
         return {
             "statusCode": 200,
             "headers": {"Content-Type": "application/json"},
-            "body": '{"image":"' + result_b64 + '"}'
+            "body": json.dumps({"image": result_b64})
         }
 
     except Exception as e:
+        print("ERROR:", str(e))  # shows in Vercel logs
         return {
             "statusCode": 500,
-            "body": str(e)
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": str(e)})
         }
