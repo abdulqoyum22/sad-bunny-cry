@@ -1,4 +1,6 @@
 openai
 requests
 Pillow
-Flask
+flask
+flask-cors
+python-dotenv

@@ -243,7 +243,7 @@ async function generatePFP() {
 
   try {
    const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? '127.0.0.1:5000/api/generate-pfp'
+  ? 'http://127.0.0.1:5000/api/generate-pfp'
   : '/api/generate-pfp';
 
 const response = await fetch(API_URL, {

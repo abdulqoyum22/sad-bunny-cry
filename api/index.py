@@ -15,7 +15,9 @@ client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
 # ===============================
 # SETTINGS
 # ===============================
-POSE_REF_PATH = "pose_reference.jpeg"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+POSE_REF_PATH = os.path.join(BASE_DIR, "pose_reference.jpeg")
+
 MAX_PER_MINUTE = 5
 COOLDOWN_SECONDS = 2
 
