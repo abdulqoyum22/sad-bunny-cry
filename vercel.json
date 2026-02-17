@@ -1,7 +1,4 @@
 {
-  "functions": {
-    "api/generate-pfp.py": {}
-  },
   "rewrites": [
     { "source": "/api/generate-pfp", "destination": "/api/generate-pfp" }
   ]
