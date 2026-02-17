@@ -155,44 +155,7 @@
             color:#fff; 
             font-weight:700;
             border: none;
-        }
-        
-        /* PFP Generator Button Styles */
-        .pfp-body-btn, .pfp-bg-btn, .pfp-trait-btn {
-            padding: 4px;
-            border-radius: 8px;
-            border: 2px solid transparent;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            background: transparent;
-        }
-        
-        .pfp-body-btn:hover, .pfp-bg-btn:hover, .pfp-trait-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .pfp-btn-active {
-            border-color: var(--accent-red) !important;
-            box-shadow: 0 0 10px rgba(122, 28, 28, 0.5);
-        }
-        
-        .pfp-trait-btn {
-            padding: 8px 16px;
-            background: #1a0f0f;
-            color: var(--text-secondary);
-            border: 1px solid rgba(185, 28, 28, 0.2);
-        }
-        
-        .pfp-trait-btn.pfp-btn-active {
-            background: var(--accent-red);
-            color: #fff;
-        }
-        
-        .pfp-bg-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-        }
+        }        
     </style>
     </head>
     <body class="bg-primary text-white">
@@ -204,142 +167,91 @@
     </div>
 
 <!-- PFP Generator Sliding Modal -->
-<div id="menuContent" class="-translate-x-full fixed inset-0 z-50 transition-transform duration-300 overflow-y-auto">
-    <div id="pfpBackdrop" class="absolute inset-0 bg-black/60"></div>
-    <div class="relative max-w-3xl mx-auto mt-20 mb-10 p-6 rounded-2xl" style="background:#181111; border:1px solid rgba(185,28,28,0.15); color:var(--text-white);">
-        <button id="closePfp" class="absolute top-4 right-4 text-sm px-3 py-1" style="background:var(--accent-red);color:#fff;border-radius:8px">Close</button>
-        <h3 style="color:var(--accent-red)" class="text-2xl font-bold mb-4">PFP Generator</h3>
-<div id="pfpGeneratorContainer">
-            <div class="space-y-4">
-                <!-- Body Selection -->
-                <div>
-                    <label class="text-xs text-[#a8a29e] mb-1 block">Select Body</label>
-                    <div class="flex gap-2 flex-wrap">
-                        <button class="pfp-body-btn pfp-btn-active" data-body="sadbunny1">
-                            <img src="./images/sadbuny1.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny1">
-                        </button>
-                        <button class="pfp-body-btn" data-body="sadbunny2">
-                            <img src="./images/sadbunny2.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny2">
-                        </button>
-                        <button class="pfp-body-btn" data-body="sadbunny3">
-                            <img src="./images/sadbunny3.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny3">
-                        </button>
-                        <button class="pfp-body-btn" data-body="sadbunny4">
-                            <img src="./images/sadbunny4.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny4">
-                        </button>
-                        <button class="pfp-body-btn" data-body="sadbunny5">
-                            <img src="./images/sadbunny5.jpeg" class="w-12 h-12 object-cover rounded" alt="bunny5">
-                        </button>
-                        <button class="pfp-body-btn" data-body="hero">
-                            <img src="./images/sadbunnyhero.jpeg" class="w-12 h-12 object-cover rounded" alt="hero">
-                        </button>
-                    </div>
-                    
-                    <!-- Background Removal Options -->
-                    <div class="mt-3 flex flex-col gap-2">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="removeBg" class="w-4 h-4 accent-[#7a1c1c]">
-                            <span class="text-xs text-[#a8a29e]">Remove Background</span>
-                        </label>
-                        <div id="bgRemovalOptions" class="hidden ml-6">
-                            <label class="text-xs text-[#a8a29e] block mb-1">Tolerance: <span id="toleranceValue">30</span></label>
-                            <input type="range" id="bgTolerance" min="0" max="100" value="30" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
-                        </div>
-                    </div>
-                    
-                    <!-- Body Position Adjustment -->
-                    <div id="bodyPositionControls" class="mt-3 flex flex-col gap-2">
-                        <label class="text-xs text-[#a8a29e] block">Body Position Adjustment</label>
-                        <div class="flex gap-4">
-                            <div class="flex-1">
-                                <label class="text-xs text-[#a8a29e] block mb-1">X Offset: <span id="bodyXValue">0</span></label>
-                                <input type="range" id="bodyXOffset" min="-100" max="100" value="0" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
-                            </div>
-                            <div class="flex-1">
-                                <label class="text-xs text-[#a8a29e] block mb-1">Y Offset: <span id="bodyYValue">0</span></label>
-                                <input type="range" id="bodyYOffset" min="-100" max="100" value="0" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
-                            </div>
-                        </div>
-                        <button id="resetBodyPosition" class="text-xs px-2 py-1 rounded mt-1" style="background:rgba(185,28,28,0.2);color:#a8a29e;">Reset Position</button>
-                    </div>
-                </div>
+<div id="menuContent" class="-translate-x-full fixed inset-0 z-50 transition-transform duration-300 overflow-y-auto" style="background: rgba(0, 0, 0, 0.95);">
+  <div class="relative max-w-2xl mx-auto mt-10 mb-10 p-8 rounded-xl" style="background:#0a0a0a; border:1px solid #b91c1c;">
 
-                <!-- Background Selection -->
-                <div>
-                    <label class="text-xs text-[#a8a29e] mb-1 block">Background</label>
-                    <div class="flex gap-2 flex-wrap">
-                        <button class="pfp-bg-btn pfp-btn-active" data-bg="#0f0a0a" style="background:#0f0a0a;border:2px solid #7a1c1c"></button>
-                        <button class="pfp-bg-btn" data-bg="#7a1c1c" style="background:#7a1c1c"></button>
-                        <button class="pfp-bg-btn" data-bg="#1a0f0f" style="background:#1a0f0f"></button>
-                        <button class="pfp-bg-btn" data-bg="#b91c1c" style="background:#b91c1c"></button>
-                        <button class="pfp-bg-btn" data-bg="#f97316" style="background:#f97316"></button>
-                        <button class="pfp-bg-btn" data-bg="#1e3a5f" style="background:#1e3a5f"></button>
-                        <button class="pfp-bg-btn" data-bg="#2d1f3d" style="background:#2d1f3d"></button>
-                        <button class="pfp-bg-btn" data-bg="gradient1" class="pfp-grad-btn" style="background:linear-gradient(135deg, #7a1c1c, #0f0a0a)"></button>
-                        <button class="pfp-bg-btn" data-bg="gradient2" class="pfp-grad-btn" style="background:linear-gradient(135deg, #f97316, #7a1c1c)"></button>
-                    </div>
-                </div>
+    <button id="closePfp" class="absolute top-4 right-4 text-sm px-4 py-2 rounded-lg font-bold transition hover:opacity-80" style="background:#b91c1c; color:#fff;">Close</button>
 
-                <!-- Trait Selection -->
-                <div>
-                    <label class="text-xs text-[#a8a29e] mb-1 block">Traits</label>
-                    <div class="flex gap-2 flex-wrap">
-                        <button class="pfp-trait-btn pfp-btn-active" data-trait="none">None</button>
-                        <button class="pfp-trait-btn" data-trait="ear</button>
-                        <button class="pfp-trait-btn" data-trait="sunglasses">Sunglasses</button>
-                        <button class="pfp-trait-btn" data-trait="crown">Crown</button>
-                        <button class="pfp-trait-btn" data-trait="hat">Top Hat</button>
-                        <button class="pfp-trait-btn" data-trait="halo">Halo</button>
-                        <button class="pfp-trait-btn" data-trait="blush">Blush</button>
-                        <button class="pfp-trait-btn" data-trait="chains">Chains</button>
-                        <button class="pfp-trait-btn" data-trait="hearteyes">Heart Eyes</button>
-                        <button class="pfp-trait-btn" data-trait="moneyeyes">Money Eyes</button>
-                        <button class="pfp-trait-btn" data-trait="stareyes">Star Eyes</button>
-                        <button class="pfp-trait-btn" data-trait="bandana">Bandana</button>
-                        <button class="pfp-trait-btn" data-trait="goldteeth">Gold Teeth</button>
-                        <button class="pfp-trait-btn" data-trait="earrings">Earrings</button>
-                        <button class="pfp-trait-btn" data-trait="3dglasses">3D Glasses</button>
-                        <button class="pfp-trait-btn" data-trait="fireaura">Fire Aura</button>
-                    </div>
-                    
-                    <!-- Trait Position Adjustment -->
-                    <div id="traitPositionControls" class="mt-3 flex flex-col gap-2">
-                        <label class="text-xs text-[#a8a29e] block">Position Adjustment</label>
-                        <div class="flex gap-4">
-                            <div class="flex-1">
-                                <label class="text-xs text-[#a8a29e] block mb-1">X Offset: <span id="traitXValue">0</span></label>
-                                <input type="range" id="traitXOffset" min="-100" max="100" value="0" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
-                            </div>
-                            <div class="flex-1">
-                                <label class="text-xs text-[#a8a29e] block mb-1">Y Offset: <span id="traitYValue">0</span></label>
-                                <input type="range" id="traitYOffset" min="-100" max="100" value="0" class="w-full h-2 bg-[#0f0a0a] rounded-lg appearance-none cursor-pointer accent-[#7a1c1c]">
-                            </div>
-                        </div>
-                        <button id="resetTraitPosition" class="text-xs px-2 py-1 rounded mt-1" style="background:rgba(185,28,28,0.2);color:#a8a29e;">Reset Position</button>
-                    </div>
-                </div>
+    <h3 class="text-3xl font-black mb-8 tracking-wider" style="color:#b91c1c;">PFP Generator</h3>
 
-                <!-- Custom Text -->
-                <div class="flex flex-col sm:flex-row gap-3 items-center">
-                    <input type="text" id="seedInput" placeholder="Custom text..." class="w-full sm:flex-1 p-3 rounded-lg" style="background:#0f0a0a; border:1px solid rgba(185,28,28,0.12); color:var(--text-white);">
-                    <input type="file" id="uploadFile" accept="image/*" class="p-2 rounded-lg" style="background:#1a0f0f; border:1px solid rgba(185,28,28,0.08); color:var(--text-secondary);">
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button id="generateBtn" class="px-4 py-2 rounded-lg" style="background:var(--accent-red); color:#fff;">Generate PFP</button>
-                    <a id="downloadBtn" class="px-4 py-2 rounded-lg hidden" style="background:var(--accent-glow); color:#111; text-decoration:none;">Download</a>
-                </div>
-
-                <div class="mt-4">
-                    <div class="text-xs text-[#a8a29e] mb-2">Preview</div>
-                    <div style="width:240px; height:240px; background:#0f0a0a; border-radius:12px; display:flex;align-items:center;justify-content:center;overflow:hidden; border:1px solid rgba(185,28,28,0.08);">
-                        <img id="avatarImg" alt="avatar preview" style="max-width:100%; max-height:100%; display:block;" />
-                    </div>
-                </div>
-            </div>
-                </div>
+    <!-- Upload Section -->
+    <div class="mb-6">
+      <label class="text-xs font-bold tracking-widest uppercase block mb-3" style="color:#b91c1c;">01 — UPLOAD YOUR PHOTO</label>
+      <div id="uploadZone" onclick="document.getElementById('pfpFileInput').click()"
+        class="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition hover:border-opacity-100"
+        style="border-color:#b91c1c; border-opacity:0.3; background:#0f0a0a;">
+        <div id="uploadPlaceholder">
+          <p class="text-4xl mb-2">⬆</p>
+          <p class="text-sm" style="color:#a8a29e;">Click to upload</p>
+        </div>
+        <img id="uploadPreview" class="hidden w-full rounded-lg object-contain max-h-64" />
+      </div>
+      <input id="pfpFileInput" type="file" accept="image/*" class="hidden" onchange="handlePFPUpload(event)" />
     </div>
+
+    <!-- Style Section -->
+    <div class="mb-6">
+      <label class="text-xs font-bold tracking-widest uppercase block mb-3" style="color:#b91c1c;">02 — PICK A STYLE</label>
+      <div class="grid grid-cols-4 gap-3">
+        <button onclick="selectStyle('anime', this)" class="style-btn py-3 px-2 rounded-lg text-xs font-bold uppercase transition hover:opacity-90" style="border:1px solid #b91c1c; background:rgba(185,28,28,0.15); color:#b91c1c;">
+          ⛩️<br>Anime
+        </button>
+        <button onclick="selectStyle('cartoon', this)" class="style-btn py-3 px-2 rounded-lg text-xs font-bold uppercase transition hover:opacity-90" style="border:1px solid rgba(185,28,28,0.2); background:#0f0a0a; color:#a8a29e;">
+          🎨<br>Cartoon
+        </button>
+        <button onclick="selectStyle('cyberpunk', this)" class="style-btn py-3 px-2 rounded-lg text-xs font-bold uppercase transition hover:opacity-90" style="border:1px solid rgba(185,28,28,0.2); background:#0f0a0a; color:#a8a29e;">
+          🤖<br>Cyberpunk
+        </button>
+        <button onclick="selectStyle('fantasy', this)" class="style-btn py-3 px-2 rounded-lg text-xs font-bold uppercase transition hover:opacity-90" style="border:1px solid rgba(185,28,28,0.2); background:#0f0a0a; color:#a8a29e;">
+          🧙<br>Fantasy
+        </button>
+        <button onclick="selectStyle('oilpaint', this)" class="style-btn py-3 px-2 rounded-lg text-xs font-bold uppercase transition hover:opacity-90" style="border:1px solid rgba(185,28,28,0.2); background:#0f0a0a; color:#a8a29e;">
+          🖼️<br>Oil Paint
+        </button>
+        <button onclick="selectStyle('pixel', this)" class="style-btn py-3 px-2 rounded-lg text-xs font-bold uppercase transition hover:opacity-90" style="border:1px solid rgba(185,28,28,0.2); background:#0f0a0a; color:#a8a29e;">
+          👾<br>Pixel
+        </button>
+        <button onclick="selectStyle('sketch', this)" class="style-btn py-3 px-2 rounded-lg text-xs font-bold uppercase transition hover:opacity-90" style="border:1px solid rgba(185,28,28,0.2); background:#0f0a0a; color:#a8a29e;">
+          ✏️<br>Sketch
+        </button>
+        <button onclick="selectStyle('custom', this)" class="style-btn py-3 px-2 rounded-lg text-xs font-bold uppercase transition hover:opacity-90" style="border:1px solid rgba(185,28,28,0.2); background:#0f0a0a; color:#a8a29e;">
+          ✨<br>Custom
+        </button>
+      </div>
+    </div>
+
+    <!-- Extra Details -->
+    <div class="mb-6">
+      <label class="text-xs font-bold tracking-widest uppercase block mb-3" style="color:#b91c1c;">03 — EXTRA DETAILS <span style="color:#666; font-weight:400;">(optional)</span></label>
+      <textarea id="pfpCustomPrompt" placeholder="e.g. glowing eyes, dragon wings, rainy background..."
+        class="w-full rounded-lg p-3 text-sm outline-none resize-none h-20"
+        style="background:#0f0a0a; border:1px solid rgba(185,28,28,0.3); color:#fff;"></textarea>
+    </div>
+
+    <!-- Generate Button -->
+    <button onclick="generatePFP()" id="pfpGenerateBtn"
+      class="w-full py-4 font-black uppercase tracking-widest rounded-xl transition hover:opacity-90 text-sm text-white"
+      style="background:#b91c1c;">
+      ✦ GENERATE PFP
+    </button>
+
+    <p id="pfpError" class="hidden text-red-400 text-sm mt-3 text-center"></p>
+
+    <!-- Result -->
+    <div id="pfpResult" class="hidden mt-6">
+      <label class="text-xs font-bold tracking-widest uppercase block mb-3" style="color:#b91c1c;">YOUR PFP</label>
+      <img id="pfpOutput" class="w-full rounded-xl" />
+      <button onclick="downloadPFP()"
+        class="mt-3 w-full py-3 font-bold uppercase tracking-widest rounded-xl transition hover:opacity-90 text-sm"
+        style="border:1px solid #b91c1c; color:#b91c1c; background:transparent;">
+        ⬇ DOWNLOAD
+      </button>
+    </div>
+
+  </div>
 </div>
+
+
 
     <!-- Main Container -->
     <div class="w-full max-w-6xl mx-auto px-4 sm:px-6">
@@ -348,7 +260,7 @@
         <nav class="sticky top-0 z-40 flex flex-col sm:flex-row items-center justify-between py-4 px-4 sm:px-6 backdrop-blur-md gap-4 sm:gap-0 mb-6 sm:mb-0" style="background: rgba(26, 15, 15, 0.6); border-bottom: 1px solid rgba(185, 28, 28, 0.1); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);">
             <div class="flex items-center gap-3 sm:gap-4">
                 <img src="./images/sadbunny-logo.jpeg" alt="Sad Bunny Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover">
-                <h2 class="text-lg sm:text-2xl font-bold text-white">THE SAD BUNNY (&#36CRY)</h2>
+                <h2 class="text-lg sm:text-2xl font-bold text-white">SAD BUNNY (&#36CRY)</h2>
             </div>
             
             <ul class="flex gap-4 sm:gap-6 text-sm sm:text-base">
@@ -365,7 +277,7 @@
         <section class="hero-bg py-8 sm:py-16 px-4 sm:px-6">
             <div class="flex flex-col lg:flex-row items-center gap-6 sm:gap-8 lg:gap-12">
                 <div class="flex-1 text-center lg:text-left order-2 lg:order-1">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg" style="color: var(--accent-red);">THE SAD BUNNY (&#36CRY)</h1>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 drop-shadow-lg" style="color: var(--accent-red);">SAD BUNNY (&#36CRY)</h1>
                     <p class="text-base sm:text-lg text-white/70 mb-6 leading-relaxed">
                        Sad Bunny (CRY) is a meme coin inspired by the viral crying clip of Bad Bunny, built around the “sad/cry” reaction meme and community-driven hype.
 
@@ -388,9 +300,9 @@
             <div class="relative z-10 flex flex-col gap-8 sm:gap-12">
                 <!-- Content -->
                 <div class="glass-card p-6 sm:p-8 rounded-lg">
-                    <h3 class="text-2xl sm:text-3xl font-bold mb-4" style="color: var(--accent-red);">THE SAD BUNNY (&#36CRY)</h3>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4" style="color: var(--accent-red);">SAD BUNNY (&#36CRY)</h3>
                     <p class="text-white/70 leading-relaxed">
-                        The Sad Bunny (CRY) token is based on a viral video of Bad Bunny crying after winning a Grammy, which people started using as a reaction meme across social media.
+                        Sad Bunny (CRY) token is based on a viral video of Bad Bunny crying after winning a Grammy, which people started using as a reaction meme across social media.
                     </p>
                 </div>
 
@@ -441,7 +353,7 @@
                 <div class="flex-1 glass-card p-6 sm:p-8 rounded-lg">
                     <h2 id="about" class="text-3xl sm:text-4xl font-bold mb-6" style="color: var(--accent-red);">SAD BUNNY (&#36CRY) NARRATIVE</h2>
                     <p class="text-white/70 leading-relaxed text-base sm:text-lg">
-                        The Sad Bunny (CRY) token is based on a viral video of Bad Bunny crying after winning a Grammy, which people started using as a reaction meme across social media.
+                         Sad Bunny (CRY) token is based on a viral video of Bad Bunny crying after winning a Grammy, which people started using as a reaction meme across social media.
 
 The project uses that “sad/crying bunny” meme as its main theme. It’s promoted through on-chain updates, tracking posts on X/Twitter, and tying into big pop-culture moments (like the Super Bowl) to stay relevant in conversations.
 
