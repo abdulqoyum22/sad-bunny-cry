@@ -242,7 +242,7 @@ async function generatePFP() {
   btn.style.opacity = '0.7';
 
   try {
-    const response = await fetch('http://127.0.0.1:5000/api/generate-pfp', {
+    const response = await fetch('/api/generate-pfp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -252,18 +252,31 @@ async function generatePFP() {
       })
     });
 
-    const data = await response.json();
+    const text = await response.text();
 
-    if (!response.ok || data.error) {
-      throw new Error(data.error || 'Generation failed. Try again!');
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("Server returned invalid JSON");
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || text || "Server error");
+    }
+
+    if (!data.image || data.image.length < 100) {
+      throw new Error("Image generation failed (empty base64)");
     }
 
     const output = document.getElementById('pfpOutput');
-    output.src = 'data:image/png;base64,' + data.image;
+    output.src = "data:image/png;base64," + data.image;
+
     resultEl.classList.remove('hidden');
     resultEl.scrollIntoView({ behavior: 'smooth' });
 
   } catch (err) {
+    console.error(err);
     showPFPError(err.message);
   } finally {
     btn.textContent = '✦ Generate PFP';
