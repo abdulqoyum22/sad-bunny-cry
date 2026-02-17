@@ -3,7 +3,7 @@
     { "source": "/api/generate-pfp", "destination": "/api/generate-pfp" }
   ],
   "functions": {
-    "api/**/*": {
+    "api/generate-pfp.py": {
       "maxDuration": 60,
       "memory": 1024
     }
